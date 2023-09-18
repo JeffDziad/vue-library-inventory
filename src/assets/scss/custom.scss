@@ -1,0 +1,20 @@
+* {
+  font-family: "Rubik", sans-serif;
+}
+
+$theme-colors: (
+        "dark": #000,
+        "primary": #A4161A,
+        "light": #D3D3D3,
+);
+
+$input-border-color: #000;
+$input-focus-border-color: #000;
+$focus-ring-color: #000;
+$focus-ring-width: 0px;
+
+$accordion-button-focus-border-color: #fff;
+$accordion-button-active-bg: #A4161A;
+$accordion-button-active-color: #fff;
+$accordion-icon-active-color: #fff;
+@import "../../../node_modules/bootstrap/scss/bootstrap";

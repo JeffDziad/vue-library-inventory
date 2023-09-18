@@ -1,0 +1,145 @@
+<script setup>
+  import {ref} from 'vue';
+
+  const emit = defineEmits([
+    'entrySubmit'
+  ]);
+  const form = ref(null);
+
+  let entryObj = {
+    id: -1,
+    imgUrl: "",
+    title: "",
+    author: "",
+    isbn: "",
+    publisher: "",
+    publishDate: "",
+    status: "On Shelve",
+    shelveLocation: "",
+    description: "",
+  };
+
+  function populateFields(fields) {
+    entryObj = fields;
+  }
+
+  function cancelModal() {
+    document.getElementById("entryForm").classList.remove('was-validated');
+    form.value.reset();
+  }
+
+  function submitEntry() {
+    if(!form.value.checkValidity()) {
+      // invalid
+      document.getElementById("entryForm").classList.add('was-validated');
+    } else {
+      // valid
+
+      // 1. Hide Modal
+      let m = bootstrap.Modal.getInstance(document.getElementById("entryModal"));
+      m.hide();
+
+      // 2. Save Changes
+      emit('entrySubmit', entryObj);
+      entryObj = {
+        id: -1,
+        imgUrl: "",
+        title: "",
+        author: "",
+        isbn: "",
+        publisher: "",
+        publishDate: "",
+        status: "On Shelve",
+        shelveLocation: "",
+        description: "",
+      };
+
+      // 3. Clear/Reset Form
+      document.getElementById("entryForm").classList.remove('was-validated');
+      form.value.reset();
+    }
+  }
+
+  defineExpose({
+    populateFields
+  });
+</script>
+
+<template>
+  <!-- Add Entry Modal -->
+  <div class="modal fade" id="entryModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="entryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="entryModalLabel">
+            <span v-if="entryObj.title === ''">
+              <i class="fa-solid fa-plus"></i>&nbsp;Add Entry
+            </span>
+            <span v-else>
+              <i class="fa-solid fa-pen-to-square"></i>&nbsp;Edit Entry
+            </span>
+          </h1>
+          <button @click="cancelModal" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form ref="form" id="entryForm" class="" @submit.prevent="submitEntry" novalidate>
+            <div class="input-group mb-3">
+              <label class="input-group-text" for="newEntryImage">Image URL</label>
+              <input v-model="entryObj.imgUrl" type="text" class="form-control" id="newEntryImage">
+            </div>
+            <div class="input-group has-validation mb-3">
+              <span class="input-group-text" id="newEntryTitle">Title</span>
+              <input v-model="entryObj.title" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required>
+              <div class="invalid-feedback">
+                Required
+              </div>
+            </div>
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="newEntryAuthor">Author</span>
+              <input v-model="entryObj.author" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+            </div>
+            <div class="input-group has-validation mb-3">
+              <span class="input-group-text" id="newEntryISBN">ISBN</span>
+              <input v-model="entryObj.isbn" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required>
+              <div class="invalid-feedback">
+                Required
+              </div>
+            </div>
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="newEntryPublisher">Publisher</span>
+              <input v-model="entryObj.publisher" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+            </div>
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="newEntryPublishDateLabel">Publish Date</span>
+              <input v-model="entryObj.publishDate" id="newEntryPublishDate" class="form-control" type="date" />
+            </div>
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="newEntryStatus">Status</span>
+              <select v-model="entryObj.status" class="form-select" aria-label="Default select example">
+                <option value="On Shelve">On Shelve</option>
+                <option value="Checked Out">Checked Out</option>
+                <option value="Discontinued">Discontinued</option>
+              </select>
+            </div>
+            <div class="input-group mb-3">
+              <span class="input-group-text" id="newEntryLocation">Shelve Location</span>
+              <input v-model="entryObj.shelveLocation" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+            </div>
+            <div class="form-floating">
+              <textarea v-model="entryObj.description" class="form-control" placeholder="Leave a comment here" id="newEntryDescription"></textarea>
+              <label for="newEntryDescription">Description/Summary</label>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer d-flex justify-content-between">
+          <button @click="cancelModal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" form="entryForm" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+
+</style>
