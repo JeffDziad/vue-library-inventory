@@ -5,7 +5,6 @@
     'entrySubmit'
   ]);
   const form = ref(null);
-
   let entryObj = {
     id: -1,
     imgUrl: "",
@@ -84,37 +83,37 @@
         <div class="modal-body">
           <form ref="form" id="entryForm" class="" @submit.prevent="submitEntry" novalidate>
             <div class="input-group mb-3">
-              <label class="input-group-text" for="newEntryImage">Image URL</label>
+              <label class="input-group-text fw-bolder" for="newEntryImage">Image URL</label>
               <input v-model="entryObj.imgUrl" type="text" class="form-control" id="newEntryImage">
             </div>
             <div class="input-group has-validation mb-3">
-              <span class="input-group-text" id="newEntryTitle">Title</span>
+              <span class="input-group-text fw-bolder" id="newEntryTitle">Title</span>
               <input v-model="entryObj.title" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required>
               <div class="invalid-feedback">
                 Required
               </div>
             </div>
             <div class="input-group mb-3">
-              <span class="input-group-text" id="newEntryAuthor">Author</span>
+              <span class="input-group-text fw-bolder" id="newEntryAuthor">Author</span>
               <input v-model="entryObj.author" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
             </div>
             <div class="input-group has-validation mb-3">
-              <span class="input-group-text" id="newEntryISBN">ISBN</span>
+              <span class="input-group-text fw-bolder" id="newEntryISBN">ISBN</span>
               <input v-model="entryObj.isbn" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required>
               <div class="invalid-feedback">
                 Required
               </div>
             </div>
             <div class="input-group mb-3">
-              <span class="input-group-text" id="newEntryPublisher">Publisher</span>
+              <span class="input-group-text fw-bolder" id="newEntryPublisher">Publisher</span>
               <input v-model="entryObj.publisher" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
             </div>
             <div class="input-group mb-3">
-              <span class="input-group-text" id="newEntryPublishDateLabel">Publish Date</span>
+              <span class="input-group-text fw-bolder" id="newEntryPublishDateLabel">Publish Date</span>
               <input v-model="entryObj.publishDate" id="newEntryPublishDate" class="form-control" type="date" />
             </div>
             <div class="input-group mb-3">
-              <span class="input-group-text" id="newEntryStatus">Status</span>
+              <span class="input-group-text fw-bolder" id="newEntryStatus">Status</span>
               <select v-model="entryObj.status" class="form-select" aria-label="Default select example">
                 <option value="On Shelve">On Shelve</option>
                 <option value="Checked Out">Checked Out</option>
@@ -122,17 +121,17 @@
               </select>
             </div>
             <div class="input-group mb-3">
-              <span class="input-group-text" id="newEntryLocation">Shelve Location</span>
+              <span class="input-group-text fw-bolder" id="newEntryLocation">Shelve Location</span>
               <input v-model="entryObj.shelveLocation" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
             </div>
             <div class="form-floating">
               <textarea v-model="entryObj.description" class="form-control" placeholder="Leave a comment here" id="newEntryDescription"></textarea>
-              <label for="newEntryDescription">Description/Summary</label>
+              <label class="fw-bolder" for="newEntryDescription">Description/Summary</label>
             </div>
           </form>
         </div>
         <div class="modal-footer d-flex justify-content-between">
-          <button @click="cancelModal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button @click="cancelModal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
           <button type="submit" form="entryForm" class="btn btn-primary">Save</button>
         </div>
       </div>

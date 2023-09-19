@@ -1,21 +1,22 @@
 <script setup>
   import {ref} from 'vue';
   import EntryModal from "@/components/EntryModal.vue";
+  import ResultArea from "@/components/ResultArea.vue";
 
   const entryModal = ref(null);
-  const entries = [];
+  const entries = ref([]);
 
   function saveEntry(entry) {
     if(entry.id > -1) {
       entries[entry.id] = entry;
     } else {
-      entry.id = entries.length;
-      entries.push(entry);
+      entry.id = entries.value.length;
+      entries.value.push(entry);
     }
     console.log(entries);
   }
 
-  function showEditEntryModal() {
+  function editEntry() {
     entryModal.value.populateFields();
   }
 
@@ -58,8 +59,8 @@
           </div>
         </div>
       </div>
-
     </div>
+    <ResultArea :entries="entries"></ResultArea>
   </div>
 
   <EntryModal ref="entryModal" @entrySubmit="saveEntry"></EntryModal>
