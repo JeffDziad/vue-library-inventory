@@ -1,25 +1,25 @@
 <script setup>
   import {ref} from 'vue';
-  import EntryModal from "@/components/EntryModal.vue";
+  import EntryEditModal from "@/components/EntryEditModal.vue";
   import ResultArea from "@/components/ResultArea.vue";
 
-  const entryModal = ref(null);
+  const entryEditModal = ref(null);
   const entries = ref([]);
 
   function saveEntry(entry) {
-    if(entry.id > -1) {
-      entries[entry.id] = entry;
+    let exists = entries.value.find(e => e.isbn === entry.isbn);
+    if(exists) {
+      let index = entries.value.indexOf(exists);
+      entries[index] = entry;
     } else {
-      entry.id = entries.value.length;
       entries.value.push(entry);
     }
-    console.log(entries);
   }
 
-  function editEntry() {
-    entryModal.value.populateFields();
+  function editEntry(entry) {
+    entry.isEdit = true;
+    entryEditModal.value.populateFields(entry);
   }
-
 </script>
 
 <template>
@@ -32,7 +32,7 @@
         </div>
       </div>
       <div class="col-6 d-flex justify-content-end align-items-center">
-        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#entryModal"><i class="fa-solid fa-plus"></i>&nbsp;Add Entry</button>
+        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#entryEditModal"><i class="fa-solid fa-plus"></i>&nbsp;Add Entry</button>
       </div>
     </div>
     <div class="row">
@@ -60,10 +60,10 @@
         </div>
       </div>
     </div>
-    <ResultArea :entries="entries"></ResultArea>
+    <ResultArea @openEditModal="editEntry" :entries="entries"></ResultArea>
   </div>
 
-  <EntryModal ref="entryModal" @entrySubmit="saveEntry"></EntryModal>
+  <EntryEditModal ref="entryEditModal" @entrySubmit="saveEntry"></EntryEditModal>
 </template>
 
 <style scoped>

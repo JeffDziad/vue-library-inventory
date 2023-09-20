@@ -1,13 +1,17 @@
 <script setup>
 import {ref} from "vue";
-import DetailList from "@/components/result_formats/DetailList.vue";
-import GridList from "@/components/result_formats/GridList.vue";
+import EntryList from "@/components/result_formats/EntryList.vue";
 
 const props = defineProps(['entries']);
+const emit = defineEmits(['openEditModal']);
 let viewFormat = ref("detail");
 
 function setViewFormat(format) {
   viewFormat.value = format;
+}
+
+function openEditModal(entry) {
+  emit('openEditModal', entry);
 }
 
 // 1. Get sorting/filter properties from parent.
@@ -27,9 +31,9 @@ function setViewFormat(format) {
         <button @click="setViewFormat('grid')" type="button" class="btn btn-primary" :class="{'active': viewFormat==='grid'}"><i class="fa-solid fa-border-all"></i></button>
       </div>
     </div>
+    <hr>
     <!--  FILTER THIS FIRST, THIS IS NOT CORRECT  -->
-    <DetailList v-if="viewFormat==='detail'" :entries="props.entries"></DetailList>
-    <GridList v-if="viewFormat==='grid'" :entries="entries"></GridList>
+    <EntryList @openEditModal="openEditModal" :entries="props.entries" :view-format="viewFormat"></EntryList>
   </div>
 </template>
 

@@ -11859,4 +11859,30 @@ textarea.form-control-lg {
   font-family: "Rubik", sans-serif;
 }
 
+.thumbnail-cover {
+  max-width: 150px;
+}
+
+.entry-detail-btn {
+  display: inline-block;
+  overflow: hidden;
+}
+.entry-detail-btn:hover {
+  box-shadow: 0px 0px 5px 0px #A4161A;
+  -webkit-box-shadow: 0px 0px 5px 0px #A4161A;
+  -moz-box-shadow: 0px 0px 5px 0px #A4161A;
+}
+.entry-detail-btn img {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  vertical-align: middle;
+}
+.entry-detail-btn img:hover {
+  transform: scale(1.1);
+  -ms-transform: scale(1.1); /* IE 9 */
+  -moz-transform: scale(1.1); /* Firefox */
+  -webkit-transform: scale(1.1); /* Safari and Chrome */
+  -o-transform: scale(1.1); /* Opera */
+}
+
 /*# sourceMappingURL=custom.css.map */

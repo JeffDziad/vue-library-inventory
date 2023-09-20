@@ -20,3 +20,30 @@ $accordion-icon-active-color: #fff;
 * {
   font-family: "Rubik", sans-serif;
 }
+
+.thumbnail-cover {
+  max-width: 150px;
+}
+
+.entry-detail-btn {
+  display: inline-block;
+  overflow: hidden;
+
+  &:hover {
+    box-shadow: 0px 0px 5px 0px $primary;
+    -webkit-box-shadow: 0px 0px 5px 0px $primary;
+    -moz-box-shadow: 0px 0px 5px 0px $primary;
+  }
+  & img {
+    cursor: pointer;
+    transition: all .2s ease;
+    vertical-align: middle;
+  }
+  & img:hover {
+    transform:scale(1.1);
+    -ms-transform:scale(1.1); /* IE 9 */
+    -moz-transform:scale(1.1); /* Firefox */
+    -webkit-transform:scale(1.1); /* Safari and Chrome */
+    -o-transform:scale(1.1); /* Opera */
+  }
+}

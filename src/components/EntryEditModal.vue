@@ -5,8 +5,7 @@
     'entrySubmit'
   ]);
   const form = ref(null);
-  let entryObj = {
-    id: -1,
+  let entryObj = ref({
     imgUrl: "",
     title: "",
     author: "",
@@ -16,15 +15,32 @@
     status: "On Shelve",
     shelveLocation: "",
     description: "",
-  };
+  });
+  let temp = {};
 
   function populateFields(fields) {
-    entryObj = fields;
+    entryObj.value = fields;
+    // this makes the edit modal inputs binded to the data. find a way to only copy the data and overwrite after validation.
   }
 
   function cancelModal() {
+    if(entryObj.value.isEdit) {
+      // isEdit can be used here to re apply the original data. Just an idea...
+      // isEdit is added in App.vue to change styles in this component. it should be removed before overwriting data.
+    }
     document.getElementById("entryForm").classList.remove('was-validated');
     form.value.reset();
+    entryObj.value = {
+      imgUrl: "",
+      title: "",
+      author: "",
+      isbn: "",
+      publisher: "",
+      publishDate: "",
+      status: "On Shelve",
+      shelveLocation: "",
+      description: "",
+    };
   }
 
   function submitEntry() {
@@ -35,27 +51,13 @@
       // valid
 
       // 1. Hide Modal
-      let m = bootstrap.Modal.getInstance(document.getElementById("entryModal"));
+      let m = bootstrap.Modal.getInstance(document.getElementById("entryEditModal"));
       m.hide();
 
       // 2. Save Changes
-      emit('entrySubmit', entryObj);
-      entryObj = {
-        id: -1,
-        imgUrl: "",
-        title: "",
-        author: "",
-        isbn: "",
-        publisher: "",
-        publishDate: "",
-        status: "On Shelve",
-        shelveLocation: "",
-        description: "",
-      };
+      emit('entrySubmit', entryObj.value);
 
-      // 3. Clear/Reset Form
-      document.getElementById("entryForm").classList.remove('was-validated');
-      form.value.reset();
+      cancelModal();
     }
   }
 
@@ -66,12 +68,12 @@
 
 <template>
   <!-- Add Entry Modal -->
-  <div class="modal fade" id="entryModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="entryModalLabel" aria-hidden="true">
+  <div class="modal fade" id="entryEditModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="entryEditModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="entryModalLabel">
-            <span v-if="entryObj.title === ''">
+          <h1 class="modal-title fs-5" id="entryEditModalLabel">
+            <span v-if="!entryObj.isEdit">
               <i class="fa-solid fa-plus"></i>&nbsp;Add Entry
             </span>
             <span v-else>
