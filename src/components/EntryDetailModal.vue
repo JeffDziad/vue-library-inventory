@@ -1,5 +1,5 @@
 <script setup>
-const props = defineProps(['entry', 'viewFormat']);
+const props = defineProps(['entry', 'viewFormat', 'editEntry', 'deleteEntry']);
 </script>
 
 <template>
@@ -59,10 +59,10 @@ const props = defineProps(['entry', 'viewFormat']);
           </div>
         </div>
         <div class="modal-footer d-flex justify-content-between">
-          <button class="btn text-dark border-0">
+          <button @click="editEntry(entry)" class="btn text-dark w-100 h-100 dark-text-bg-hover" data-bs-toggle="modal" data-bs-target="#entryEditModal">
             <i class="fa-regular fa-pen-to-square h3"></i>
           </button>
-          <button class="btn text-danger border-0">
+          <button @click="deleteEntry(entry)" class="btn text-danger w-100 h-100 danger-text-bg-hover" data-bs-toggle="modal" data-bs-target="#entryDeleteModal">
             <i class="fa-solid fa-trash h3"></i>
           </button>
         </div>

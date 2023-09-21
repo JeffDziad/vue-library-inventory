@@ -19,13 +19,16 @@
   let temp = {};
 
   function populateFields(fields) {
+    // entryObj.value = JSON.parse(JSON.stringify(fields));
     entryObj.value = fields;
     // this makes the edit modal inputs binded to the data. find a way to only copy the data and overwrite after validation.
   }
 
   function cancelModal() {
+    let m = bootstrap.Modal.getInstance(document.getElementById("entryEditModal"));
+    m.hide();
     if(entryObj.value.isEdit) {
-      // isEdit can be used here to re apply the original data. Just an idea...
+      // isEdit can be used here to re-apply the original data. Just an idea...
       // isEdit is added in App.vue to change styles in this component. it should be removed before overwriting data.
     }
     document.getElementById("entryForm").classList.remove('was-validated');
@@ -50,13 +53,9 @@
     } else {
       // valid
 
-      // 1. Hide Modal
-      let m = bootstrap.Modal.getInstance(document.getElementById("entryEditModal"));
-      m.hide();
-
-      // 2. Save Changes
+      // Save Changes
+      console.log('save', entryObj.value);
       emit('entrySubmit', entryObj.value);
-
       cancelModal();
     }
   }

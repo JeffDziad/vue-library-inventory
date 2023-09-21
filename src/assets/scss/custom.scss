@@ -21,6 +21,18 @@ $accordion-icon-active-color: #fff;
   font-family: "Rubik", sans-serif;
 }
 
+.dark-text-bg-hover {
+  &:hover {
+    background-color: fade-out($dark, 0.75);
+  }
+}
+
+.danger-text-bg-hover {
+  &:hover {
+    background-color: fade-out($danger, 0.75);
+  }
+}
+
 .thumbnail-cover {
   max-width: 150px;
 }
