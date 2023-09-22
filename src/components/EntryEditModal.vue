@@ -68,18 +68,18 @@
 <template>
   <!-- Add Entry Modal -->
   <div class="modal fade" id="entryEditModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="entryEditModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
-        <div class="modal-header">
+        <div class="modal-header bg-primary">
           <h1 class="modal-title fs-5" id="entryEditModalLabel">
-            <span v-if="!entryObj.isEdit">
+            <span v-if="!entryObj.isEdit" class="text-light">
               <i class="fa-solid fa-plus"></i>&nbsp;Add Entry
             </span>
-            <span v-else>
+            <span v-else class="text-light">
               <i class="fa-solid fa-pen-to-square"></i>&nbsp;Edit Entry
             </span>
           </h1>
-          <button @click="cancelModal" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button @click="cancelModal" type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <form ref="form" id="entryForm" class="" @submit.prevent="submitEntry" novalidate>
@@ -126,7 +126,7 @@
               <input v-model="entryObj.shelveLocation" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
             </div>
             <div class="form-floating">
-              <textarea v-model="entryObj.description" class="form-control" placeholder="Leave a comment here" id="newEntryDescription"></textarea>
+              <textarea v-model="entryObj.description" class="form-control" placeholder="Leave a comment here" id="newEntryDescription" rows="5" style="height: 100%;"></textarea>
               <label class="fw-bolder" for="newEntryDescription">Description/Summary</label>
             </div>
           </form>

@@ -58,7 +58,7 @@ const refined = computed(() => {
       </div>
     </div>
     <div v-for="entry in refined" class="mb-3" :class="{'col-12': (viewFormat==='detail'), 'col-auto': (viewFormat==='grid')}">
-      <EntryCard :detailEntry="openDetailModal" :deleteEntry="deleteEntry" :editEntry="editEntry" :entry="entry" :view-format="viewFormat"></EntryCard>
+      <EntryCard :detailEntry="openDetailModal" :deleteEntry="deleteEntry" :editEntry="editEntry" :entry="entry" :view-format="viewFormat" class="border-primary border border-2"></EntryCard>
     </div>
     <EntryDetailModal ref="entryDetailModal" :editEntry="editEntry" :deleteEntry="deleteEntry" :entry="currentDetailEntry" :view-format="viewFormat"></EntryDetailModal>
   </div>

@@ -26,8 +26,7 @@ const props = defineProps(['entry', 'viewFormat', 'editEntry', 'deleteEntry', 'd
             </div>
             <div class="col-auto">
               <div class="mb-1 h3">
-                <span v-if="props.entry.title!==''">{{props.entry.title}}</span>
-                <span v-else>UNKNOWN</span>
+                <span>{{props.entry.title}}</span>
               </div>
               <div class="mb-1">
                 <label class="fw-bold text-decoration-underline"><i class="fa-solid fa-user"></i>&nbsp;Author</label><br>

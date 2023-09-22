@@ -48,7 +48,7 @@ import {computed, onMounted, ref, watch} from 'vue';
     if(exists) {
       console.log('updating');
       let index = entries.value.indexOf(exists);
-      entries[index] = entry;
+      entries.value[index] = entry;
     } else {
       entries.value.push(entry);
     }
@@ -68,6 +68,21 @@ import {computed, onMounted, ref, watch} from 'vue';
     let i = entries.value.indexOf(e);
     entries.value.splice(i, 1);
   }
+  function camelCaseToReadable(str) {
+    let words = [];
+    let word = "";
+    str+="X";
+    for(let i = 0; i<str.length; i++) {
+      if(str[i] === str[i].toUpperCase()) {
+        words.push(word);
+        word = "";
+      }
+      if(i === 0) {
+        word += str[i].toUpperCase();
+      } else word += str[i];
+    }
+    return words.join(' ');
+  }
 </script>
 
 <template>
@@ -84,7 +99,7 @@ import {computed, onMounted, ref, watch} from 'vue';
     </div>
     <div class="row">
       <div class="col">
-        <div class="accordion accordion-flush border rounded" id="sortFilterAccordion">
+        <div class="accordion border border-2 rounded rounded-2 border-primary" id="sortFilterAccordion">
           <div class="accordion-item">
             <h2 class="accordion-header">
               <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
@@ -98,14 +113,26 @@ import {computed, onMounted, ref, watch} from 'vue';
                     <h5>Advanced Search</h5>
                     <div class="px-2">
                       <div v-for="field in searchByFields">
-                        <input type="checkbox" v-model="searchByFieldsChecked[field]">
-                        <label class="ps-1">{{field}}</label>
+                        <input :id="'advSearch'+field" type="checkbox" v-model="searchByFieldsChecked[field]">
+                        <label :for="'advSearch'+field" class="ps-1">{{camelCaseToReadable(field)}}</label>
                       </div>
                     </div>
+                    <button type="button" class="btn btn-primary btn-sm">Clear</button>
                   </div>
                   <div class="col">
-                    <h5>Filter</h5>
+                    <h5>Sort/Filter</h5>
                     <div>
+                    <!--  Maybe put status here instead  -->
+                      <!-- ****TEST CODE**** -->
+                      <div class="form-floating h-75">
+                        <select class="form-select" id="floatingSelectGrid">
+                          <option selected>All</option>
+                          <option value="1">On Shelve</option>
+                          <option value="2">Checked Out</option>
+                          <option value="3">Discontinued</option>
+                        </select>
+                        <label for="floatingSelectGrid">Status</label>
+                      </div>
 
                     </div>
                   </div>

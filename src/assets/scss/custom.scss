@@ -23,13 +23,19 @@ $accordion-icon-active-color: #fff;
 
 .dark-text-bg-hover {
   &:hover {
-    background-color: fade-out($dark, 0.75);
+    background-color: fade-out($dark, 0.60);
+  }
+  &:hover * {
+    color: fade-in(white, 1);
   }
 }
 
 .danger-text-bg-hover {
   &:hover {
-    background-color: fade-out($danger, 0.75);
+    background-color: fade-out($danger, 0.60);
+  }
+  &:hover * {
+    color: fade-in(white, 1);
   }
 }
 

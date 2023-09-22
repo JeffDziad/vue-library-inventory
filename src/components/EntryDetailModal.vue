@@ -5,11 +5,11 @@ const props = defineProps(['entry', 'viewFormat', 'editEntry', 'deleteEntry']);
 <template>
   <!-- Detail Modal -->
   <div class="modal fade" id="entryDetailModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="entryDetailModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="entryDetailModalLabel">{{props.entry.title}}</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-header bg-primary">
+          <h5 class="modal-title text-light" id="entryDetailModalLabel">{{props.entry.title}}</h5>
+          <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="row">
@@ -58,13 +58,15 @@ const props = defineProps(['entry', 'viewFormat', 'editEntry', 'deleteEntry']);
             </div>
           </div>
         </div>
-        <div class="modal-footer d-flex justify-content-between">
-          <button @click="editEntry(entry)" class="btn text-dark w-100 h-100 dark-text-bg-hover" data-bs-toggle="modal" data-bs-target="#entryEditModal">
-            <i class="fa-regular fa-pen-to-square h3"></i>
-          </button>
-          <button @click="deleteEntry(entry)" class="btn text-danger w-100 h-100 danger-text-bg-hover" data-bs-toggle="modal" data-bs-target="#entryDeleteModal">
-            <i class="fa-solid fa-trash h3"></i>
-          </button>
+        <div class="modal-footer">
+          <div class="w-100 h-100 d-flex justify-content-between">
+            <button @click="editEntry(entry)" class="btn text-dark w-50 h-100 dark-text-bg-hover" data-bs-toggle="modal" data-bs-target="#entryEditModal">
+              <i class="fa-regular fa-pen-to-square h3"></i>
+            </button>
+            <button @click="deleteEntry(entry)" class="btn text-danger w-50 h-100 danger-text-bg-hover" data-bs-toggle="modal" data-bs-target="#entryDeleteModal">
+              <i class="fa-solid fa-trash h3"></i>
+            </button>
+          </div>
         </div>
       </div>
     </div>
