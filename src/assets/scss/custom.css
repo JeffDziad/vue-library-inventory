@@ -11886,9 +11886,9 @@ textarea.form-control-lg {
   overflow: hidden;
 }
 .entry-detail-btn:hover {
-  box-shadow: 0px 0px 5px 0px #A4161A;
-  -webkit-box-shadow: 0px 0px 5px 0px #A4161A;
-  -moz-box-shadow: 0px 0px 5px 0px #A4161A;
+  box-shadow: 0 0 5px 0 #A4161A;
+  -webkit-box-shadow: 0 0 5px 0 #A4161A;
+  -moz-box-shadow: 0 0 5px 0 #A4161A;
 }
 .entry-detail-btn img {
   cursor: pointer;

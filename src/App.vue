@@ -3,7 +3,6 @@
   import ResultArea from "@/components/ResultArea.vue";
   import EntryDeleteModal from "@/components/EntryDeleteModal.vue";
   import EntryEditModal from "@/components/EntryEditModal.vue";
-
   const entryEditModal = ref(null);
   const entries = ref([]);
   const currentDeleteTitle = ref("");

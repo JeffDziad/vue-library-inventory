@@ -57,9 +57,9 @@ $nav-tabs-link-active-bg: $primary;
   overflow: hidden;
 
   &:hover {
-    box-shadow: 0px 0px 5px 0px $primary;
-    -webkit-box-shadow: 0px 0px 5px 0px $primary;
-    -moz-box-shadow: 0px 0px 5px 0px $primary;
+    box-shadow: 0 0 5px 0 $primary;
+    -webkit-box-shadow: 0 0 5px 0 $primary;
+    -moz-box-shadow: 0 0 5px 0 $primary;
   }
   & img {
     cursor: pointer;
