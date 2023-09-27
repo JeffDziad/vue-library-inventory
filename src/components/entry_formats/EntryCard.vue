@@ -6,7 +6,7 @@ const props = defineProps(['entry', 'viewFormat', 'editEntry', 'deleteEntry', 'd
   <div class="card">
     <div class="card-body">
 
-      <!--   Grid View   -->
+      <!--   Region: Grid View   -->
       <div v-if="viewFormat==='grid'">
         <a @click="detailEntry(entry)" class="entry-detail-btn text-reset text-decoration-none" data-bs-toggle="modal" data-bs-target="#entryDetailModal">
           <img v-if="props.entry.imgUrl !== ''" class="img-fluid thumbnail-cover" :src="props.entry.imgUrl" :alt="props.entry.title">
@@ -14,9 +14,9 @@ const props = defineProps(['entry', 'viewFormat', 'editEntry', 'deleteEntry', 'd
         </a>
       </div>
 
-      <!--   Detail View   -->
+      <!-- Region: Detail View   -->
       <div v-if="viewFormat==='detail'" class="row">
-        <div class="col">
+        <div class="col-sm-12 col-md-10">
           <div class="row">
             <div class="col-auto">
               <a @click="detailEntry(entry)" class="entry-detail-btn text-reset text-decoration-none" data-bs-toggle="modal" data-bs-target="#entryDetailModal">
@@ -40,17 +40,33 @@ const props = defineProps(['entry', 'viewFormat', 'editEntry', 'deleteEntry', 'd
             </div>
           </div>
         </div>
-        <div class="col-2">
-          <div class="row h-50">
+        <div class="col-sm-12 col-md-2">
+          <div class="d-none d-md-block row h-50">
             <div class="col-12 m-0 h-100 w-100">
-              <button @click="editEntry(entry)" class="btn text-dark w-100 h-100 dark-text-bg-hover" data-bs-toggle="modal" data-bs-target="#entryEditModal">
+              <button @click="editEntry(entry)" class="d-sm-none d-md-block btn text-dark w-100 h-100 dark-text-bg-hover " data-bs-toggle="modal" data-bs-target="#entryEditModal">
                 <i class="fa-regular fa-pen-to-square h3"></i>
               </button>
             </div>
             <div class="col-12 m-0 h-100 w-100">
-              <button @click="deleteEntry(entry)" class="btn text-danger w-100 h-100 danger-text-bg-hover" data-bs-toggle="modal" data-bs-target="#entryDeleteModal">
+              <button @click="deleteEntry(entry)" class="d-sm-none d-md-block btn text-danger w-100 h-100 danger-text-bg-hover" data-bs-toggle="modal" data-bs-target="#entryDeleteModal">
                 <i class="fa-solid fa-trash h3"></i>
               </button>
+            </div>
+          </div>
+          <div class="d-block d-md-none row">
+            <div class="col-12">
+              <div class="row">
+                <div class="col-6">
+                  <button @click="editEntry(entry)" class="d-sm-block d-md-none btn text-dark w-100 h-100 dark-text-bg-hover " data-bs-toggle="modal" data-bs-target="#entryEditModal">
+                    <i class="fa-regular fa-pen-to-square h3"></i>
+                  </button>
+                </div>
+                <div class="col-6">
+                  <button @click="deleteEntry(entry)" class="d-sm-block d-md-none btn text-danger w-100 h-100 danger-text-bg-hover" data-bs-toggle="modal" data-bs-target="#entryDeleteModal">
+                    <i class="fa-solid fa-trash h3"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

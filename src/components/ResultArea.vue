@@ -14,24 +14,20 @@ function openDetailModal(entry) {
   currentDetailEntry.value = entry;
 }
 
-// SORTING SHOULD BE DONE HERE
+//! SORTING SHOULD BE DONE HERE
 const refined = computed(() => {
-  // let bySearchQuery = props.entries.filter((e) => e.title.includes(props.searchQuery));
-  // return bySearchQuery;
-
   let selectedFields = props.searchByFields.split(',');
   let enteredFields = props.searchQuery.split(',');
   let r = [];
-  if(selectedFields.length===enteredFields.length && enteredFields && selectedFields) {
+  if(enteredFields && selectedFields) {
     for(let i = 0; i < props.entries.length; i++) {
       let e = props.entries[i];
       let match = true;
-      let count = 0;
-      for(let f of selectedFields) {
-        if(!e[f].toUpperCase().includes(enteredFields[count].toUpperCase())) {
+      for(let j = 0; j < enteredFields.length; j++) {
+        let f = selectedFields[j];
+        if(!e[f].toUpperCase().includes(enteredFields[j].toUpperCase())) {
           match = false;
         }
-        count++;
       }
       if(match) r.push(e);
     }
@@ -44,8 +40,7 @@ const refined = computed(() => {
 <template>
   <div class="row mt-3">
     <div class="col-12 mb-3 d-flex justify-content-between">
-      <span class="pt-3 ps-3">{{refined.length}} Results</span>
-      <!--   These will toggle what type of view is presented, grid or detail list.   -->
+      <span class="pt-3 ps-3">{{refined.length}} Result(s)</span>
       <div class="btn-group" role="group" aria-label="List Format">
         <button @click="setViewFormat('detail')" type="button" class="btn btn-primary" :class="{'active': viewFormat==='detail'}"><i class="fa-solid fa-list"></i></button>
         <button @click="setViewFormat('grid')" type="button" class="btn btn-primary" :class="{'active': viewFormat==='grid'}"><i class="fa-solid fa-border-all"></i></button>
@@ -53,8 +48,9 @@ const refined = computed(() => {
     </div>
     <hr>
     <div class="col-12">
-      <div v-if="props.entries.length <= 0">
-        <p class="h3">No Entries Found...</p>
+      <div v-if="refined.length <= 0" class="text-muted">
+        <i style="font-size: 35px;" class="fa-solid fa-triangle-exclamation align-text-bottom"></i>
+        <span style="font-size: 25px;" class="ps-3">No Entries Found...</span>
       </div>
     </div>
     <div v-for="entry in refined" class="mb-3" :class="{'col-12': (viewFormat==='detail'), 'col-auto': (viewFormat==='grid')}">

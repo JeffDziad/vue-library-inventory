@@ -1,78 +1,36 @@
 <script setup>
-  import {ref} from 'vue';
+  import EntryForm from './forms/EntryForm.vue';
 
+  const props = defineProps(['entry']);
   const emit = defineEmits([
     'entrySubmit'
   ]);
-  const form = ref(null);
-  let entryObj = ref({
-    imgUrl: "",
-    title: "",
-    author: "",
-    isbn: "",
-    publisher: "",
-    publishDate: "",
-    status: "On Shelve",
-    shelveLocation: "",
-    description: "",
-  });
-  let temp = {};
-
-  function populateFields(fields) {
-    // entryObj.value = JSON.parse(JSON.stringify(fields));
-    entryObj.value = fields;
-    // this makes the edit modal inputs binded to the data. find a way to only copy the data and overwrite after validation.
-  }
 
   function cancelModal() {
     let m = bootstrap.Modal.getInstance(document.getElementById("entryEditModal"));
     m.hide();
-    if(entryObj.value.isEdit) {
-      // isEdit can be used here to re-apply the original data. Just an idea...
-      // isEdit is added in App.vue to change styles in this component. it should be removed before overwriting data.
-    }
     document.getElementById("entryForm").classList.remove('was-validated');
-    form.value.reset();
-    entryObj.value = {
-      imgUrl: "",
-      title: "",
-      author: "",
-      isbn: "",
-      publisher: "",
-      publishDate: "",
-      status: "On Shelve",
-      shelveLocation: "",
-      description: "",
-    };
   }
 
   function submitEntry() {
-    if(!form.value.checkValidity()) {
-      // invalid
-      document.getElementById("entryForm").classList.add('was-validated');
-    } else {
-      // valid
-
-      // Save Changes
-      console.log('save', entryObj.value);
-      emit('entrySubmit', entryObj.value);
-      cancelModal();
-    }
+    emit('entrySubmit');
+    cancelModal();
   }
 
-  defineExpose({
-    populateFields
-  });
+  //! ADD A TABS TO CHOOSE EITHER TO LOOK UP AND ADD A BOOK BY ISBN or MANUALLY ENTER ITS DETAILS
+  //? VALID GOOGLE BOOKS API CALL: https://www.googleapis.com/books/v1/volumes?q=isbn:9780393609394
+  //! might have to make a separate component for the manually entered details form.
+  //! since it will need to be used in the tab content as well as outside the tab content for editing where the tabs will not be visible.
+  //! perhaps just hiding the tabs and isbn lookup tab with d-none and the manual entry tab with d-block using :class on isEdit will be enough.
 </script>
 
 <template>
-  <!-- Add Entry Modal -->
   <div class="modal fade" id="entryEditModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="entryEditModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header bg-primary">
           <h1 class="modal-title fs-5" id="entryEditModalLabel">
-            <span v-if="!entryObj.isEdit" class="text-light">
+            <span v-if="!props.entry.isEdit" class="text-light">
               <i class="fa-solid fa-plus"></i>&nbsp;Add Entry
             </span>
             <span v-else class="text-light">
@@ -82,54 +40,24 @@
           <button @click="cancelModal" type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form ref="form" id="entryForm" class="" @submit.prevent="submitEntry" novalidate>
-            <div class="input-group mb-3">
-              <label class="input-group-text fw-bolder" for="newEntryImage">Image URL</label>
-              <input v-model="entryObj.imgUrl" type="text" class="form-control" id="newEntryImage">
+          <ul class="nav nav-tabs mb-3" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active fw-bold" id="manual-tab" data-bs-toggle="tab" data-bs-target="#manual" type="button" role="tab" aria-controls="manual" aria-selected="true">Manual Entry</button>
+            </li>
+            <li v-if="!entry.isEdit" class="nav-item" role="presentation">
+              <button class="nav-link fw-bold" id="lookup-tab" data-bs-toggle="tab" data-bs-target="#lookup" type="button" role="tab" aria-controls="lookup" aria-selected="false">Book Lookup</button>
+            </li>
+          </ul>
+          <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="manual" role="tabpanel" aria-labelledby="lookup-tab">
+              <EntryForm :entry="props.entry" :submit-entry="submitEntry"></EntryForm>
             </div>
-            <div class="input-group has-validation mb-3">
-              <span class="input-group-text fw-bolder" id="newEntryTitle">Title</span>
-              <input v-model="entryObj.title" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required>
-              <div class="invalid-feedback">
-                Required
-              </div>
+            <div class="tab-pane fade" id="lookup" role="tabpanel" aria-labelledby="lookup-tab">
+              Google books api search should go here. when a book is found, a button labeled "Use" when clicked will populate the entry prop
+              with data from the books api. Either the current data modal should just take the layout of books api object structure or
+              I will need to manually assign the books api object to the current entry object structure.
             </div>
-            <div class="input-group mb-3">
-              <span class="input-group-text fw-bolder" id="newEntryAuthor">Author</span>
-              <input v-model="entryObj.author" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
-            </div>
-            <div class="input-group has-validation mb-3">
-              <span class="input-group-text fw-bolder" id="newEntryISBN">ISBN</span>
-              <input v-model="entryObj.isbn" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" required>
-              <div class="invalid-feedback">
-                Required
-              </div>
-            </div>
-            <div class="input-group mb-3">
-              <span class="input-group-text fw-bolder" id="newEntryPublisher">Publisher</span>
-              <input v-model="entryObj.publisher" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
-            </div>
-            <div class="input-group mb-3">
-              <span class="input-group-text fw-bolder" id="newEntryPublishDateLabel">Publish Date</span>
-              <input v-model="entryObj.publishDate" id="newEntryPublishDate" class="form-control" type="date" />
-            </div>
-            <div class="input-group mb-3">
-              <span class="input-group-text fw-bolder" id="newEntryStatus">Status</span>
-              <select v-model="entryObj.status" class="form-select" aria-label="Default select example">
-                <option value="On Shelve">On Shelve</option>
-                <option value="Checked Out">Checked Out</option>
-                <option value="Discontinued">Discontinued</option>
-              </select>
-            </div>
-            <div class="input-group mb-3">
-              <span class="input-group-text fw-bolder" id="newEntryLocation">Shelve Location</span>
-              <input v-model="entryObj.shelveLocation" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
-            </div>
-            <div class="form-floating">
-              <textarea v-model="entryObj.description" class="form-control" placeholder="Leave a comment here" id="newEntryDescription" rows="5" style="height: 100%;"></textarea>
-              <label class="fw-bolder" for="newEntryDescription">Description/Summary</label>
-            </div>
-          </form>
+          </div>
         </div>
         <div class="modal-footer d-flex justify-content-between">
           <button @click="cancelModal" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>

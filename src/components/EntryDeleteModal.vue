@@ -16,7 +16,7 @@ function proceedWithDelete() {
           <button type="button" class="btn-close bg-light" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <p class="h5">Are you sure you would like to delete "{{props.title}}"?</p>
+          <p class="h5">Are you sure you want to delete "{{props.title}}"?</p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -29,4 +29,4 @@ function proceedWithDelete() {
 
 <style scoped>
 
-</style>const emit = defineEmits([;
+</style>

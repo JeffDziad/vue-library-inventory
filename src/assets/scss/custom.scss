@@ -2,6 +2,7 @@ $dark: #000;
 $light: #D3D3D3;
 $primary: #A4161A;
 $danger: #ff0000;
+$secondary: #B2B09B;
 
 $input-border-color: #000;
 $input-focus-border-color: #000;
@@ -12,6 +13,10 @@ $accordion-button-focus-border-color: #fff;
 $accordion-button-active-bg: #A4161A;
 $accordion-button-active-color: #fff;
 $accordion-icon-active-color: #fff;
+
+$nav-tabs-link-active-color: $light;
+$nav-tabs-link-active-bg: $primary;
+
 
 @import "../../../node_modules/bootstrap/scss/bootstrap";
 
@@ -43,6 +48,10 @@ $accordion-icon-active-color: #fff;
   max-width: 150px;
 }
 
+.detail-cover {
+  max-width: 250px;
+}
+
 .entry-detail-btn {
   display: inline-block;
   overflow: hidden;
@@ -64,4 +73,23 @@ $accordion-icon-active-color: #fff;
     -webkit-transform:scale(1.1); /* Safari and Chrome */
     -o-transform:scale(1.1); /* Opera */
   }
+}
+
+.status-on-shelve {
+  background: darkgreen;
+}
+
+.status-checked-out {
+  background: darkorange;
+}
+
+.status-discontinued {
+  background: darkred;
+}
+
+.detail-field-label {
+  border-radius: $border-radius;
+  padding: 3px 10px;
+  border: solid 1px $black;
+  color: $black;
 }

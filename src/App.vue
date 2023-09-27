@@ -1,5 +1,5 @@
 <script setup>
-import {computed, onMounted, ref, watch} from 'vue';
+  import {computed, onMounted, ref, watch} from 'vue';
   import ResultArea from "@/components/ResultArea.vue";
   import EntryDeleteModal from "@/components/EntryDeleteModal.vue";
   import EntryEditModal from "@/components/EntryEditModal.vue";
@@ -8,6 +8,23 @@ import {computed, onMounted, ref, watch} from 'vue';
   const entries = ref([]);
   const currentDeleteTitle = ref("");
   const currentDeleteISBN = ref("");
+
+  const currentEditEntry = ref({});
+  //! IF I DO THE GOOGLE BOOKS API, MAKE SURE THE FIELDS MATCH
+  const newEntryObj = {
+    imgUrl: "",
+    title: "",
+    author: "",
+    isbn: "",
+    publisher: "",
+    publishDate: "",
+    status: "On Shelve",
+    shelveLocation: "",
+    description: "",
+  };
+  //! ADD EDITION FIELD
+  //! ADD CATEGORIES FIELD AT SOME POINT - use select with checkboxes to select multiple categories
+  //! - include a way to add a category to the possible categories.
 
   // Search
   const searchQuery = ref("");
@@ -25,39 +42,46 @@ import {computed, onMounted, ref, watch} from 'vue';
     return out;
   });
 
-  // Local Storage
+
   onMounted(() => {
-    let list = localStorage.getItem('entries');
-    if(list) entries.value = JSON.parse(list);
-    else entries.value = [];
+    loadFromLocalStorage();
+    //! Maybe create a list of all categories here so when you add an entry, it can have a list of already used Categories.
+    //! Additionally - allow users to specify their own categories that will show up as an option for future use.
   })
+
+  //! Save categories separatly in localstorage and create a watcher to watch categories array ref.
+  //! When a user adds a new entry with a new category, add it to the users category list to have it updated in local storage.
   watch(
       () => entries,
       (newValue) => {
         localStorage.setItem('entries', JSON.stringify(newValue.value));
       },
       { deep: true }
-  )
+  );
 
-  // Functions
+  function loadFromLocalStorage() {
+    let list = localStorage.getItem('entries');
+    if(list) entries.value = JSON.parse(list);
+    else entries.value = [];
+  }
   function getEntryFromISBN(isbn) {
     return entries.value.find(e => e.isbn === isbn);
   }
-  function saveEntry(entry) {
-    let exists = getEntryFromISBN(entry.isbn);
+  function saveEntry() {
+    let exists = getEntryFromISBN(currentEditEntry.value.isbn);
     if(exists) {
-      console.log('updating');
       let index = entries.value.indexOf(exists);
-      entries.value[index] = entry;
+      entries.value[index] = currentEditEntry.value;
     } else {
-      entries.value.push(entry);
+      entries.value.push(currentEditEntry.value);
     }
   }
-
-  //! TRY TO FIX THE ISSUE OF THE ENTRY BEING CHANGED BEFORE HITTING SAVE IN MODAL
+  function addEntry() {
+    currentEditEntry.value = JSON.parse(JSON.stringify(newEntryObj));
+  }
   function editEntry(entry) {
     entry.isEdit = true;
-    entryEditModal.value.populateFields(entry);
+    currentEditEntry.value = JSON.parse(JSON.stringify(entry));
   }
   function promptForDelete(entry) {
     currentDeleteTitle.value = entry.title;
@@ -83,6 +107,9 @@ import {computed, onMounted, ref, watch} from 'vue';
     }
     return words.join(' ');
   }
+  function clearSearchByFieldsChecked() {
+    searchByFieldsChecked.value = {};
+  }
 </script>
 
 <template>
@@ -94,7 +121,7 @@ import {computed, onMounted, ref, watch} from 'vue';
         </div>
       </div>
       <div class="col-6 d-flex justify-content-end align-items-center">
-        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#entryEditModal"><i class="fa-solid fa-plus"></i>&nbsp;Add Entry</button>
+        <button @click="addEntry" class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#entryEditModal"><i class="fa-solid fa-plus"></i>&nbsp;Add Entry</button>
       </div>
     </div>
     <div class="row">
@@ -109,21 +136,25 @@ import {computed, onMounted, ref, watch} from 'vue';
             <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#sortFilterAccordion">
               <div class="accordion-body">
                 <div class="row">
-                  <div class="col">
-                    <h5>Advanced Search</h5>
+                  <div class="col-lg-6 col-md-12 mb-4 mb-md-0">
+                    <h5 class="fw-bold">Advanced Search</h5>
                     <div class="px-2">
                       <div v-for="field in searchByFields">
-                        <input :id="'advSearch'+field" type="checkbox" v-model="searchByFieldsChecked[field]">
-                        <label :for="'advSearch'+field" class="ps-1">{{camelCaseToReadable(field)}}</label>
+                        <div class="form-check">
+                          <input v-model="searchByFieldsChecked[field]" class="form-check-input border-primary border" type="checkbox" value="" :id="'advSearch'+field">
+                          <label class="form-check-label" :for="'advSearch'+field">
+                            {{camelCaseToReadable(field)}}
+                          </label>
+                        </div>
                       </div>
                     </div>
-                    <button type="button" class="btn btn-primary btn-sm">Clear</button>
+                    <p class="mb-2 small fw-lighter">*Make sure to add a <b class="h5">COMMA</b> between each entered field.</p>
+                    <button @click="clearSearchByFieldsChecked" type="button" class="btn btn-primary btn-sm">Clear</button>
                   </div>
-                  <div class="col">
-                    <h5>Sort/Filter</h5>
+                  <div class="col-lg-6 col-md-12 mb-md-2">
+                    <h5 class="fw-bold">Sort/Filter</h5>
                     <div>
-                    <!--  Maybe put status here instead  -->
-                      <!-- ****TEST CODE**** -->
+                    <!-- Region: SortFilterTesting -->
                       <div class="form-floating h-75">
                         <select class="form-select" id="floatingSelectGrid">
                           <option selected>All</option>
@@ -133,7 +164,6 @@ import {computed, onMounted, ref, watch} from 'vue';
                         </select>
                         <label for="floatingSelectGrid">Status</label>
                       </div>
-
                     </div>
                   </div>
                 </div>
@@ -145,8 +175,7 @@ import {computed, onMounted, ref, watch} from 'vue';
     </div>
     <ResultArea :deleteEntry="promptForDelete" :searchByFields="searchPlaceholder" :editEntry="editEntry" :entries="entries" :search-query="searchQuery"></ResultArea>
   </div>
-
-  <EntryEditModal ref="entryEditModal" @entrySubmit="saveEntry"></EntryEditModal>
+  <EntryEditModal ref="entryEditModal" :entry="currentEditEntry" @entrySubmit="saveEntry"></EntryEditModal>
   <EntryDeleteModal :title="currentDeleteTitle" :isbn="currentDeleteISBN" :deleteSelf="deleteEntry"></EntryDeleteModal>
 </template>
 
