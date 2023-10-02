@@ -1,7 +1,8 @@
 <script setup>
 import {ref} from "vue";
+import CategoryPicker from "@/components/CategoryPicker.vue";
 
-const props = defineProps(['entry', 'submitEntry']);
+const props = defineProps(['entry', 'submitEntry', 'categoryList']);
 const form = ref(null);
 
 function submit() {
@@ -11,12 +12,16 @@ function submit() {
     props.submitEntry();
   }
 }
+
+function newCategory(c) {
+  props.entry.categories.push(c);
+}
 </script>
 
 <template>
   <form ref="form" id="entryForm" class="" @submit.prevent="submit" novalidate>
     <div class="input-group mb-3">
-      <label class="input-group-text fw-bolder" for="newEntryImage">Image URL</label>
+      <label class="input-group-text fw-bolder" for="newEntryImage">Cover Image URL</label>
       <input v-model="props.entry.imgUrl" type="text" class="form-control" id="newEntryImage">
     </div>
     <div class="input-group has-validation mb-3">
@@ -58,6 +63,7 @@ function submit() {
       <span class="input-group-text fw-bolder" id="newEntryLocation">Shelve Location</span>
       <input v-model="props.entry.shelveLocation" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
     </div>
+    <CategoryPicker class="mb-3" :category-list="categoryList" :entry-categories="entry.categories" :new-category-func="newCategory"></CategoryPicker>
     <div class="form-floating">
       <textarea v-model="props.entry.description" class="form-control" placeholder="Leave a comment here" id="newEntryDescription" rows="5" style="height: 100%;"></textarea>
       <label class="fw-bolder" for="newEntryDescription">Description/Summary</label>

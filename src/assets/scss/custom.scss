@@ -2,15 +2,15 @@ $dark: #000;
 $light: #D3D3D3;
 $primary: #A4161A;
 $danger: #ff0000;
-$secondary: #B2B09B;
+//$secondary: #B2B09B;
 
 $input-border-color: #000;
 $input-focus-border-color: #000;
 $focus-ring-color: #000;
 $focus-ring-width: 0px;
 
-$accordion-button-focus-border-color: #fff;
-$accordion-button-active-bg: #A4161A;
+$accordion-button-focus-border-color: $primary;
+$accordion-button-active-bg: $primary;
 $accordion-button-active-color: #fff;
 $accordion-icon-active-color: #fff;
 
@@ -24,6 +24,26 @@ $nav-tabs-link-active-bg: $primary;
 
 * {
   font-family: "Rubik", sans-serif;
+}
+
+#backgroundImage {
+  position: fixed;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* The image used */
+  background-image: url("src/assets/media/book-background.png");
+
+  /* Add the blur effect */
+  filter: blur(8px);
+  -webkit-filter: blur(8px);
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: repeat-y;
+  background-size: cover;
 }
 
 .dark-text-bg-hover {
@@ -45,11 +65,15 @@ $nav-tabs-link-active-bg: $primary;
 }
 
 .thumbnail-cover {
-  max-width: 150px;
+  width: 150px;
+  height: 100%;
+  object-fit: cover;
 }
 
 .detail-cover {
-  max-width: 250px;
+  width: 250px;
+  height: 100%;
+  object-fit: cover;
 }
 
 .entry-detail-btn {
@@ -88,8 +112,17 @@ $nav-tabs-link-active-bg: $primary;
 }
 
 .detail-field-label {
-  border-radius: $border-radius;
   padding: 3px 10px;
-  border: solid 1px $black;
+  border-bottom: solid 1px $black;
   color: $black;
+}
+
+.input-btn-icon {
+
+}
+
+.category-checkbox:hover {
+  &:first-child {
+    border-width: 3px;
+  }
 }

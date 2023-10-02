@@ -1,5 +1,9 @@
 <script setup>
+import CatergoryPill from "@/components/CatergoryPill.vue";
+import {computed, ref} from "vue";
+
 const props = defineProps(['entry', 'viewFormat', 'editEntry', 'deleteEntry']);
+const readMore = ref(false);
 
 function formattedPublishDate() {
   if(props.entry) {
@@ -12,6 +16,21 @@ function formattedPublishDate() {
     return dateArr.join('');
   }
 }
+
+function toggleDescription() {
+  readMore.value = !readMore.value;
+  console.log(readMore.value);
+}
+
+const formattedDescription = computed(() => {
+  if(props.entry.description) {
+    if (readMore.value) {
+      return props.entry.description;
+    } else {
+      return `${props.entry.description.slice(0, 300)}...`;
+    }
+  }
+});
 </script>
 
 <template>
@@ -51,49 +70,59 @@ function formattedPublishDate() {
               <img v-else class="detail-cover" src="https://blog.springshare.com/wp-content/uploads/2010/02/nc-md.gif" alt="No image available">
             </div>
             <div class="col mt-3">
-              <div class="mb-1">
+              <div v-if="props.entry.author!==''" class="mb-1">
                 <label class="fw-bold detail-field-label"><i class="fa-solid fa-user me-2"></i>Author</label><br>
                 <div class="ps-3">
-                  <span v-if="props.entry.author!==''">{{props.entry.author}}</span>
-                  <span v-else>UNKNOWN</span>
+                  <span>{{props.entry.author}}</span>
                 </div>
               </div>
-              <div class="mb-1">
+              <div class="mb-3">
                 <label class="fw-bold detail-field-label"><i class="fa-solid fa-hashtag  me-2"></i>ISBN</label><br>
                 <div class="ps-3">
                   <span>{{props.entry.isbn}}</span>
                 </div>
               </div>
-              <div class="mb-1">
+              <div v-if="props.entry.publisher!==''" class="mb-3">
                 <label class="fw-bold detail-field-label"><i class="fa-solid fa-building  me-2"></i>Publisher</label><br>
                 <div class="ps-3">
-                  <span v-if="props.entry.publisher!==''">{{props.entry.publisher}}</span>
-                  <span v-else>UNKNOWN</span>
+                  <span>{{props.entry.publisher}}</span>
                 </div>
               </div>
-              <div class="mb-1">
+              <div v-if="props.entry.publishDate!==''" class="mb-3">
                 <label class="fw-bold detail-field-label"><i class="fa-solid fa-calendar  me-2"></i>Publish Date</label><br>
                 <div class="ps-3">
-                  <span v-if="props.entry.publishDate!==''">{{formattedPublishDate()}}</span>
-                  <span v-else>UNKNOWN</span>
+                  <span>{{formattedPublishDate()}}</span>
                 </div>
               </div>
-              <div class="mb-1">
+              <div v-if="props.entry.shelveLocation!==''"  class="mb-3">
                 <label class="fw-bold detail-field-label"><i class="fa-solid fa-location-crosshairs me-2"></i>Shelve Location</label><br>
                 <div class="ps-3">
-                  <span v-if="props.entry.shelveLocation!==''">{{props.entry.shelveLocation}}</span>
-                  <span v-else>UNKNOWN</span>
+                  <span>{{props.entry.shelveLocation}}</span>
                 </div>
               </div>
             </div>
           </div>
           <div class="row mt-0 mt-sm-3">
             <div class="col-12">
-              <div>
+              <div v-if="props.entry.description!==''">
                 <label class="fw-bold detail-field-label"><i class="fa-solid fa-circle-question  me-2"></i>Description</label><br>
                 <div class="ps-3">
-                  <span v-if="props.entry.description!==''">{{props.entry.description}}</span>
-                  <span v-else>UNKNOWN</span>
+                  {{ formattedDescription }}
+                  <a class="link-primary" style="cursor: pointer;" @click="toggleDescription">
+                    Read {{ readMore ? "Less" : "More" }}
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mt-3">
+            <div class="col-12">
+              <div class="card">
+                <div class="card-header bg-primary text-white"><i class="me-3 fa-solid fa-layer-group fa-lg"></i>Categories</div>
+                <div class="card-body p-0 m-0">
+                  <div v-for="cat in entry.categories">
+                    <CatergoryPill :name="cat"></CatergoryPill>
+                  </div>
                 </div>
               </div>
             </div>

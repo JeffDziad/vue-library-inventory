@@ -3,7 +3,7 @@ import {computed, ref} from "vue";
 import EntryCard from "@/components/entry_formats/EntryCard.vue";
 import EntryDetailModal from "@/components/EntryDetailModal.vue";
 
-const props = defineProps(['entries', 'searchQuery', 'searchByFields', 'editEntry', 'deleteEntry']);
+const props = defineProps(['entries', 'searchQuery', 'searchByFields', "searchCategories", 'editEntry', 'deleteEntry']);
 let viewFormat = ref("detail");
 let currentDetailEntry = ref({});
 
@@ -14,11 +14,12 @@ function openDetailModal(entry) {
   currentDetailEntry.value = entry;
 }
 
-//! SORTING SHOULD BE DONE HERE
 const refined = computed(() => {
   let selectedFields = props.searchByFields.split(',');
   let enteredFields = props.searchQuery.split(',');
   let r = [];
+
+  //? Search Bar
   if(enteredFields && selectedFields) {
     for(let i = 0; i < props.entries.length; i++) {
       let e = props.entries[i];
@@ -32,7 +33,22 @@ const refined = computed(() => {
       if(match) r.push(e);
     }
   }
-  return r;
+
+  //? Category Search
+  //! SHOULD THIS BE AN 'AND' or a 'OR'??
+  let r2 = [];
+  let count = 0;
+  r.forEach((e) => {
+    let match = true;
+    props.searchCategories.every((c) => {
+      if(e.categories.indexOf(c) === -1) {
+        match = false;
+      }
+    });
+    if(match) r2.push(e);
+    count++;
+  });
+  return r2;
 });
 
 </script>
@@ -40,13 +56,13 @@ const refined = computed(() => {
 <template>
   <div class="row mt-3">
     <div class="col-12 mb-3 d-flex justify-content-between">
-      <span class="pt-3 ps-3">{{refined.length}} Result(s)</span>
+      <p class="bg-primary text-white rounded-3 text-center p-2 m-0">{{refined.length}} Result(s)</p>
       <div class="btn-group" role="group" aria-label="List Format">
         <button @click="setViewFormat('detail')" type="button" class="btn btn-primary" :class="{'active': viewFormat==='detail'}"><i class="fa-solid fa-list"></i></button>
         <button @click="setViewFormat('grid')" type="button" class="btn btn-primary" :class="{'active': viewFormat==='grid'}"><i class="fa-solid fa-border-all"></i></button>
       </div>
     </div>
-    <hr>
+    <hr class="border-5">
     <div class="col-12">
       <div v-if="refined.length <= 0" class="text-muted">
         <i style="font-size: 35px;" class="fa-solid fa-triangle-exclamation align-text-bottom"></i>

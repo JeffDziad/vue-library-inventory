@@ -3,13 +3,12 @@
   import ResultArea from "@/components/ResultArea.vue";
   import EntryDeleteModal from "@/components/EntryDeleteModal.vue";
   import EntryEditModal from "@/components/EntryEditModal.vue";
+  import CategoryPicker from "@/components/CategoryPicker.vue";
   const entryEditModal = ref(null);
   const entries = ref([]);
   const currentDeleteTitle = ref("");
   const currentDeleteISBN = ref("");
-
   const currentEditEntry = ref({});
-  //! IF I DO THE GOOGLE BOOKS API, MAKE SURE THE FIELDS MATCH
   const newEntryObj = {
     imgUrl: "",
     title: "",
@@ -20,15 +19,16 @@
     status: "On Shelve",
     shelveLocation: "",
     description: "",
+    categories: [],
   };
-  //! ADD EDITION FIELD
-  //! ADD CATEGORIES FIELD AT SOME POINT - use select with checkboxes to select multiple categories
-  //! - include a way to add a category to the possible categories.
+  const defaultCategories = ['Fiction', 'Non-Fiction', 'Romance', 'Mystery', 'Sci-Fi', 'Poetry', 'Fantasy', 'Biography',
+    'Young Adult', "Children's Literature", 'Literary Fiction', 'Graphic Novel'];
 
   // Search
   const searchQuery = ref("");
   const searchByFields = ['title', 'author', 'isbn', 'publisher', 'publishDate', 'status', 'shelveLocation', 'description'];
   const searchByFieldsChecked = ref({});
+  const searchCategories = ref([]);
   const searchPlaceholder = computed(() => {
     let out = "";
     for(const key in searchByFieldsChecked.value) {
@@ -37,19 +37,21 @@
       }
     }
     if(out === "") out = "title";
-    else  out = out.slice(0, -1);
+    else out = out.slice(0, -1);
     return out;
   });
-
+  const isMultiSearch = computed(() => {
+    let count = 0;
+    for(let s in searchByFieldsChecked.value) {
+      if(searchByFieldsChecked.value[s]) count++;
+      if(count >= 2) return true;
+    }
+  });
 
   onMounted(() => {
     loadFromLocalStorage();
-    //! Maybe create a list of all categories here so when you add an entry, it can have a list of already used Categories.
-    //! Additionally - allow users to specify their own categories that will show up as an option for future use.
   })
 
-  //! Save categories separatly in localstorage and create a watcher to watch categories array ref.
-  //! When a user adds a new entry with a new category, add it to the users category list to have it updated in local storage.
   watch(
       () => entries,
       (newValue) => {
@@ -57,6 +59,18 @@
       },
       { deep: true }
   );
+
+  const categories = computed(() => {
+    let out = defaultCategories;
+    for(let e of entries.value) {
+      for(let c of e.categories) {
+        if(out.indexOf(c) === -1) {
+          out.push(c);
+        }
+      }
+    }
+    return out;
+  });
 
   function loadFromLocalStorage() {
     let list = localStorage.getItem('entries');
@@ -75,8 +89,15 @@
       entries.value.push(currentEditEntry.value);
     }
   }
+  function setEditEntry(obj) {
+    currentEditEntry.value = obj;
+  }
+
+  //! addEntry and editEntry could be replaced by setCurrentEditEntry(x) where x is either an already existing entry or the newEntryObj
+  //!   passed in for new entries. currently, this is a misrepresentation of what the functions actual duties are.
   function addEntry() {
-    currentEditEntry.value = JSON.parse(JSON.stringify(newEntryObj));
+    // currentEditEntry.value = JSON.parse(JSON.stringify(newEntryObj));
+    currentEditEntry.value = JSON.parse(JSON.stringify({...newEntryObj}));
   }
   function editEntry(entry) {
     entry.isEdit = true;
@@ -112,12 +133,13 @@
 </script>
 
 <template>
-  <div class="container">
+  <div id="wrapper" class="container">
     <div class="row">
-      <div class="col-6">
-        <div class="input-group my-3">
+      <div class="col-6 my-3">
+        <div class="input-group">
           <input v-model="searchQuery" type="text" :placeholder="(searchPlaceholder==='title')?'Start typing to search...':searchPlaceholder" class="form-control" aria-label="Search" aria-describedby="searchBtn">
         </div>
+        <p v-if="isMultiSearch" class="mb-2 small fw-lighter">*Make sure to add a <b class="h5">COMMA</b> between each entered field.</p>
       </div>
       <div class="col-6 d-flex justify-content-end align-items-center">
         <button @click="addEntry" class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#entryEditModal"><i class="fa-solid fa-plus"></i>&nbsp;Add Entry</button>
@@ -147,8 +169,7 @@
                         </div>
                       </div>
                     </div>
-                    <p class="mb-2 small fw-lighter">*Make sure to add a <b class="h5">COMMA</b> between each entered field.</p>
-                    <button @click="clearSearchByFieldsChecked" type="button" class="btn btn-primary btn-sm">Clear</button>
+                    <button @click="clearSearchByFieldsChecked" type="button" class="btn btn-primary btn-sm mt-2">Clear</button>
                   </div>
                   <div class="col-lg-6 col-md-12 mb-md-2">
                     <h5 class="fw-bold">Sort/Filter</h5>
@@ -164,6 +185,18 @@
                         <label for="floatingSelectGrid">Status</label>
                       </div>
                     </div>
+                    <div class="mt-3">
+                      <CategoryPicker :entry-categories="searchCategories" :category-list="categories"></CategoryPicker>
+                      <div class="row mt-1">
+                        <div class="col d-flex justify-content-between">
+                          <button class="btn btn-primary btn-sm p-1">Clear</button>
+                          <div class="btn-group" role="group" aria-label="List Format">
+                            <button @click="" type="button" class="btn btn-sm btn-primary p-1">AND</button>
+                            <button @click="" type="button" class="btn btn-sm btn-primary p-1">OR</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -172,12 +205,14 @@
         </div>
       </div>
     </div>
-    <ResultArea :deleteEntry="promptForDelete" :searchByFields="searchPlaceholder" :editEntry="editEntry" :entries="entries" :search-query="searchQuery"></ResultArea>
+    <ResultArea :deleteEntry="promptForDelete" :searchByFields="searchPlaceholder" :search-categories="searchCategories" :editEntry="editEntry" :entries="entries" :search-query="searchQuery"></ResultArea>
   </div>
-  <EntryEditModal ref="entryEditModal" :entry="currentEditEntry" @entrySubmit="saveEntry"></EntryEditModal>
+  <EntryEditModal ref="entryEditModal" :entry="currentEditEntry" :category-list="categories" @entrySubmit="saveEntry" @set-entry="setEditEntry"></EntryEditModal>
   <EntryDeleteModal :title="currentDeleteTitle" :isbn="currentDeleteISBN" :deleteSelf="deleteEntry"></EntryDeleteModal>
 </template>
 
 <style scoped>
-
+#wrapper {
+  background: rgba(255, 255, 255, 0.35);
+}
 </style>

@@ -28,14 +28,17 @@ const props = defineProps(['entry', 'viewFormat', 'editEntry', 'deleteEntry', 'd
               <div class="mb-1 h3">
                 <span>{{props.entry.title}}</span>
               </div>
-              <div class="mb-1">
-                <label class="fw-bold text-decoration-underline"><i class="fa-solid fa-user"></i>&nbsp;Author</label><br>
-                <span v-if="props.entry.author!==''">{{props.entry.author}}</span>
-                <span v-else>UNKNOWN</span>
+              <div v-if="props.entry.author!==''" class="mb-1">
+                <label class="fw-bold detail-field-label"><i class="fa-solid fa-user me-2"></i>Author</label><br>
+                <div class="ps-3">
+                  <span>{{props.entry.author}}</span>
+                </div>
               </div>
-              <div class="mb-1">
-                <label class="fw-bold text-decoration-underline"><i class="fa-solid fa-hashtag"></i>&nbsp;ISBN</label><br>
-                <span>{{props.entry.isbn}}</span>
+              <div class="mb-3">
+                <label class="fw-bold detail-field-label"><i class="fa-solid fa-hashtag  me-2"></i>ISBN</label><br>
+                <div class="ps-3">
+                  <span>{{props.entry.isbn}}</span>
+                </div>
               </div>
             </div>
           </div>
