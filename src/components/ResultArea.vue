@@ -19,7 +19,7 @@ const refined = computed(() => {
   let enteredFields = props.searchQuery.split(',');
   let r = [];
 
-  //? Search Bar
+  //? Search by query
   if(enteredFields && selectedFields) {
     for(let i = 0; i < props.entries.length; i++) {
       let e = props.entries[i];
@@ -34,8 +34,8 @@ const refined = computed(() => {
     }
   }
 
-  //? Category Search
-  //! SHOULD THIS BE AN 'AND' or a 'OR'??
+  //? Search by category
+  //! SHOULD THIS BE AN 'AND' OR A 'OR'??
   let r2 = [];
   let count = 0;
   r.forEach((e) => {

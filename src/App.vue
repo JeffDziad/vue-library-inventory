@@ -9,6 +9,13 @@
   const currentDeleteTitle = ref("");
   const currentDeleteISBN = ref("");
   const currentEditEntry = ref({});
+
+  //! Add way to track what books someone is reading.
+  //! Add a isReading bool that tracks whether the user is currently reading that book.
+  //! If they are, be able to sort on those books, perhaps set the border of the card to blue to indicate its currently being read.
+  //! Inside the detail modal, if they are reading it, enabled the reading log and allow them to track their reading progress.
+  //! put a progress bar to indicate how much they have read.
+  //! When the isReading value is false, lock the ability to add entries to the log.
   const newEntryObj = {
     imgUrl: "",
     title: "",
@@ -189,7 +196,7 @@
                       <CategoryPicker :entry-categories="searchCategories" :category-list="categories"></CategoryPicker>
                       <div class="row mt-1">
                         <div class="col d-flex justify-content-between">
-                          <button class="btn btn-primary btn-sm p-1">Clear</button>
+                          <button @click="searchCategories = []" class="btn btn-primary btn-sm p-1">Clear</button>
                           <div class="btn-group" role="group" aria-label="List Format">
                             <button @click="" type="button" class="btn btn-sm btn-primary p-1">AND</button>
                             <button @click="" type="button" class="btn btn-sm btn-primary p-1">OR</button>
@@ -207,6 +214,9 @@
     </div>
     <ResultArea :deleteEntry="promptForDelete" :searchByFields="searchPlaceholder" :search-categories="searchCategories" :editEntry="editEntry" :entries="entries" :search-query="searchQuery"></ResultArea>
   </div>
+
+
+<!-- Put all modals in a single modal component -->
   <EntryEditModal ref="entryEditModal" :entry="currentEditEntry" :category-list="categories" @entrySubmit="saveEntry" @set-entry="setEditEntry"></EntryEditModal>
   <EntryDeleteModal :title="currentDeleteTitle" :isbn="currentDeleteISBN" :deleteSelf="deleteEntry"></EntryDeleteModal>
 </template>

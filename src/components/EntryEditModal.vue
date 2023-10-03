@@ -10,7 +10,7 @@
   ]);
 
   function showManualTab() {
-    //! THIS SOMETIMES THROWS ERRORS
+    //! Maybe put this in a event listener on hidden.bs.modal
     let t = document.querySelector('#myTab li:first-child button');
     bootstrap.Tab.getInstance(t).show()
   }
@@ -22,6 +22,7 @@
     showManualTab();
   }
 
+  //! Maybe move this to googleBooksApi.js
   function entryFromkApi(book) {
     showManualTab();
     let info = book.volumeInfo;
