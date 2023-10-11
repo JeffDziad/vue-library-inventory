@@ -5,7 +5,7 @@ import CatergoryPill from "@/components/CatergoryPill.vue";
   const props = defineProps(['categoryList', 'entryCategories', 'newCategoryFunc']);
   const newCategory = ref("");
   const form = ref(null);
-  const generatedId = Math.random() * 10e16;
+  const generatedId = Math.floor(Math.random() * 10e16);
 
   const categories = computed(() => {
     if(props.entryCategories && props.categoryList) {

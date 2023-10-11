@@ -1,14 +1,11 @@
 <script setup>
   import {computed, onMounted, ref, watch} from 'vue';
   import ResultArea from "@/components/ResultArea.vue";
-  import EntryDeleteModal from "@/components/EntryDeleteModal.vue";
-  import EntryEditModal from "@/components/EntryEditModal.vue";
   import CategoryPicker from "@/components/CategoryPicker.vue";
-  const entryEditModal = ref(null);
+  import EntryAddModal from "@/components/EntryAddModal.vue";
   const entries = ref([]);
   const currentDeleteTitle = ref("");
   const currentDeleteISBN = ref("");
-  const currentEditEntry = ref({});
 
   //! Add way to track what books someone is reading.
   //! Add a isReading bool that tracks whether the user is currently reading that book.
@@ -16,18 +13,7 @@
   //! Inside the detail modal, if they are reading it, enabled the reading log and allow them to track their reading progress.
   //! put a progress bar to indicate how much they have read.
   //! When the isReading value is false, lock the ability to add entries to the log.
-  const newEntryObj = {
-    imgUrl: "",
-    title: "",
-    author: "",
-    isbn: "",
-    publisher: "",
-    publishDate: "",
-    status: "On Shelve",
-    shelveLocation: "",
-    description: "",
-    categories: [],
-  };
+
   const defaultCategories = ['Fiction', 'Non-Fiction', 'Romance', 'Mystery', 'Sci-Fi', 'Poetry', 'Fantasy', 'Biography',
     'Young Adult', "Children's Literature", 'Literary Fiction', 'Graphic Novel'];
 
@@ -87,32 +73,14 @@
   function getEntryFromISBN(isbn) {
     return entries.value.find(e => e.isbn === isbn);
   }
-  function saveEntry() {
-    let exists = getEntryFromISBN(currentEditEntry.value.isbn);
+  function saveEntry(entry) {
+    let exists = getEntryFromISBN(entry.isbn);
     if(exists) {
       let index = entries.value.indexOf(exists);
-      entries.value[index] = currentEditEntry.value;
+      entries.value[index] = entry;
     } else {
-      entries.value.push(currentEditEntry.value);
+      entries.value.push(entry);
     }
-  }
-  function setEditEntry(obj) {
-    currentEditEntry.value = obj;
-  }
-
-  //! addEntry and editEntry could be replaced by setCurrentEditEntry(x) where x is either an already existing entry or the newEntryObj
-  //!   passed in for new entries. currently, this is a misrepresentation of what the functions actual duties are.
-  function addEntry() {
-    // currentEditEntry.value = JSON.parse(JSON.stringify(newEntryObj));
-    currentEditEntry.value = JSON.parse(JSON.stringify({...newEntryObj}));
-  }
-  function editEntry(entry) {
-    entry.isEdit = true;
-    currentEditEntry.value = JSON.parse(JSON.stringify(entry));
-  }
-  function promptForDelete(entry) {
-    currentDeleteTitle.value = entry.title;
-    currentDeleteISBN.value = entry.isbn;
   }
   function deleteEntry(isbn) {
     let e = getEntryFromISBN(isbn);
@@ -141,15 +109,18 @@
 
 <template>
   <div id="wrapper" class="container">
+
+
     <div class="row">
       <div class="col-6 my-3">
         <div class="input-group">
-          <input v-model="searchQuery" type="text" :placeholder="(searchPlaceholder==='title')?'Start typing to search...':searchPlaceholder" class="form-control" aria-label="Search" aria-describedby="searchBtn">
+          <input v-model="searchQuery" type="text" :placeholder="(searchPlaceholder==='title')?'Start typing to search...':searchPlaceholder" class="form-control border-primary border-2" aria-label="Search" aria-describedby="searchBtn">
         </div>
         <p v-if="isMultiSearch" class="mb-2 small fw-lighter">*Make sure to add a <b class="h5">COMMA</b> between each entered field.</p>
       </div>
       <div class="col-6 d-flex justify-content-end align-items-center">
-        <button @click="addEntry" class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#entryEditModal"><i class="fa-solid fa-plus"></i>&nbsp;Add Entry</button>
+<!--        <button @click="addEntry" class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#entryEditModal"><i class="fa-solid fa-plus"></i>&nbsp;Add Entry</button>-->
+        <EntryAddModal id="addEntryModal" @add-entry="saveEntry" :category-list="categories"></EntryAddModal>
       </div>
     </div>
     <div class="row">
@@ -212,13 +183,10 @@
         </div>
       </div>
     </div>
-    <ResultArea :deleteEntry="promptForDelete" :searchByFields="searchPlaceholder" :search-categories="searchCategories" :editEntry="editEntry" :entries="entries" :search-query="searchQuery"></ResultArea>
+
+
+    <ResultArea :update-entry="saveEntry" :category-list="categories" :delete-entry="deleteEntry" :searchByFields="searchPlaceholder" :search-categories="searchCategories" :entries="entries" :search-query="searchQuery"></ResultArea>
   </div>
-
-
-<!-- Put all modals in a single modal component -->
-  <EntryEditModal ref="entryEditModal" :entry="currentEditEntry" :category-list="categories" @entrySubmit="saveEntry" @set-entry="setEditEntry"></EntryEditModal>
-  <EntryDeleteModal :title="currentDeleteTitle" :isbn="currentDeleteISBN" :deleteSelf="deleteEntry"></EntryDeleteModal>
 </template>
 
 <style scoped>

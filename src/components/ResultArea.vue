@@ -3,17 +3,15 @@ import {computed, ref} from "vue";
 import EntryCard from "@/components/entry_formats/EntryCard.vue";
 import EntryDetailModal from "@/components/EntryDetailModal.vue";
 
-const props = defineProps(['entries', 'searchQuery', 'searchByFields', "searchCategories", 'editEntry', 'deleteEntry']);
+const props = defineProps(['entries', 'searchQuery', 'searchByFields', 'categoryList', "searchCategories", 'deleteEntry', 'updateEntry']);
 let viewFormat = ref("detail");
 let currentDetailEntry = ref({});
 
 function setViewFormat(format) {
   viewFormat.value = format;
 }
-function openDetailModal(entry) {
-  currentDetailEntry.value = entry;
-}
 
+//! Searching should probably be done in App.vue
 const refined = computed(() => {
   let selectedFields = props.searchByFields.split(',');
   let enteredFields = props.searchQuery.split(',');
@@ -70,9 +68,8 @@ const refined = computed(() => {
       </div>
     </div>
     <div v-for="entry in refined" class="mb-3" :class="{'col-12': (viewFormat==='detail'), 'col-auto': (viewFormat==='grid')}">
-      <EntryCard :detailEntry="openDetailModal" :deleteEntry="deleteEntry" :editEntry="editEntry" :entry="entry" :view-format="viewFormat" class="border-primary border border-2"></EntryCard>
+      <EntryCard :update-entry="updateEntry" :deleteEntry="deleteEntry" :category-list="categoryList" :entry="entry" :view-format="viewFormat" class="border-primary border border-2"></EntryCard>
     </div>
-    <EntryDetailModal ref="entryDetailModal" :editEntry="editEntry" :deleteEntry="deleteEntry" :entry="currentDetailEntry" :view-format="viewFormat"></EntryDetailModal>
   </div>
 </template>
 

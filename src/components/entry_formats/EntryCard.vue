@@ -1,5 +1,9 @@
 <script setup>
-const props = defineProps(['entry', 'viewFormat', 'editEntry', 'deleteEntry', 'detailEntry']);
+import EntryEditModal from "@/components/EntryEditModal.vue";
+import EntryDeleteModal from "@/components/EntryDeleteModal.vue";
+import EntryDetailModal from "@/components/EntryDetailModal.vue";
+
+const props = defineProps(['entry', 'viewFormat', 'categoryList', 'deleteEntry', 'updateEntry']);
 </script>
 
 <template>
@@ -7,34 +11,37 @@ const props = defineProps(['entry', 'viewFormat', 'editEntry', 'deleteEntry', 'd
     <div class="card-body">
 
       <!--   Region: Grid View   -->
-      <div v-if="viewFormat==='grid'">
-        <a @click="detailEntry(entry)" class="entry-detail-btn text-reset text-decoration-none" data-bs-toggle="modal" data-bs-target="#entryDetailModal">
-          <img v-if="props.entry.imgUrl !== ''" class="img-fluid thumbnail-cover" :src="props.entry.imgUrl" :alt="props.entry.title">
-          <img v-else class="thumbnail-cover" src="https://blog.springshare.com/wp-content/uploads/2010/02/nc-md.gif" alt="No image available" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="See Details">
-        </a>
-      </div>
+<!--      <div v-if="viewFormat==='grid'">-->
+<!--        <a class="entry-detail-btn text-reset text-decoration-none" data-bs-toggle="modal" :data-bs-target="'#'+'entryDetailModal-'+entry.isbn">-->
+<!--          <img v-if="props.entry.imgUrl !== ''" class="img-fluid thumbnail-cover" :src="props.entry.imgUrl" :alt="props.entry.title">-->
+<!--          <img v-else class="thumbnail-cover" src="https://blog.springshare.com/wp-content/uploads/2010/02/nc-md.gif" alt="No image available" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="See Details">-->
+<!--        </a>-->
+<!--      </div>-->
 
       <!-- Region: Detail View   -->
-      <div v-if="viewFormat==='detail'" class="row">
-        <div class="col-sm-12 col-md-10">
+      <div class="row">
+        <div class="col-sm-12" :class="{'col-md-10':(viewFormat==='detail')}">
           <div class="row">
             <div class="col-auto">
-              <a @click="detailEntry(entry)" class="entry-detail-btn text-reset text-decoration-none" data-bs-toggle="modal" data-bs-target="#entryDetailModal">
+              <entry-detail-modal :id="'entryDetailModal-'+entry.isbn" :entry="entry" >
                 <img v-if="props.entry.imgUrl !== ''" class="img-fluid thumbnail-cover" :src="props.entry.imgUrl" :alt="props.entry.title">
                 <img v-else class="thumbnail-cover" src="https://blog.springshare.com/wp-content/uploads/2010/02/nc-md.gif" alt="No image available">
-              </a>
+              </entry-detail-modal>
             </div>
-            <div class="col-auto">
+
+
+
+            <div v-if="viewFormat==='detail'" class="col-auto">
               <div class="mb-1 h3">
                 <span>{{props.entry.title}}</span>
               </div>
-              <div v-if="props.entry.author!==''" class="mb-1">
+              <div v-if="props.entry.author!=='' && viewFormat==='detail'" class="mb-1">
                 <label class="fw-bold detail-field-label"><i class="fa-solid fa-user me-2"></i>Author</label><br>
                 <div class="ps-3">
                   <span>{{props.entry.author}}</span>
                 </div>
               </div>
-              <div class="mb-3">
+              <div v-if="viewFormat==='detail'" class="mb-3">
                 <label class="fw-bold detail-field-label"><i class="fa-solid fa-hashtag  me-2"></i>ISBN</label><br>
                 <div class="ps-3">
                   <span>{{props.entry.isbn}}</span>
@@ -43,33 +50,13 @@ const props = defineProps(['entry', 'viewFormat', 'editEntry', 'deleteEntry', 'd
             </div>
           </div>
         </div>
-        <div class="col-sm-12 col-md-2">
-          <div class="d-none d-md-block row h-50">
+        <div v-if="viewFormat==='detail'" class="col-sm-12 col-md-2">
+          <div class="row h-50">
             <div class="col-12 m-0 h-100 w-100">
-              <button @click="editEntry(entry)" class="d-sm-none d-md-block btn text-dark w-100 h-100 dark-text-bg-hover " data-bs-toggle="modal" data-bs-target="#entryEditModal">
-                <i class="fa-regular fa-pen-to-square h3"></i>
-              </button>
+              <entry-edit-modal :update-entry="updateEntry" :id="'entryEditModal-'+entry.isbn" :entry="entry" :category-list="categoryList"></entry-edit-modal>
             </div>
             <div class="col-12 m-0 h-100 w-100">
-              <button @click="deleteEntry(entry)" class="d-sm-none d-md-block btn text-danger w-100 h-100 danger-text-bg-hover" data-bs-toggle="modal" data-bs-target="#entryDeleteModal">
-                <i class="fa-solid fa-trash h3"></i>
-              </button>
-            </div>
-          </div>
-          <div class="d-block d-md-none row">
-            <div class="col-12">
-              <div class="row">
-                <div class="col-6">
-                  <button @click="editEntry(entry)" class="d-sm-block d-md-none btn text-dark w-100 h-100 dark-text-bg-hover " data-bs-toggle="modal" data-bs-target="#entryEditModal">
-                    <i class="fa-regular fa-pen-to-square h3"></i>
-                  </button>
-                </div>
-                <div class="col-6">
-                  <button @click="deleteEntry(entry)" class="d-sm-block d-md-none btn text-danger w-100 h-100 danger-text-bg-hover" data-bs-toggle="modal" data-bs-target="#entryDeleteModal">
-                    <i class="fa-solid fa-trash h3"></i>
-                  </button>
-                </div>
-              </div>
+              <entry-delete-modal :delete-self="deleteEntry" :id="'entryDeleteModal-'+entry.isbn" :title="entry.title" :isbn="entry.isbn"></entry-delete-modal>
             </div>
           </div>
         </div>
